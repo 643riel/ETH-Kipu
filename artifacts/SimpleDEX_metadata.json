@@ -244,12 +244,60 @@
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"addLiquidity(uint256,uint256)": {
+					"details": "No need to validate that amountA and amountB are less than or equal to the approved amount,  as the ERC-20 transferFrom function automatically reverts the transaction if the approval is insufficient.",
+					"params": {
+						"amountA": "The amount of Token A to be added to the liquidity pool",
+						"amountB": "The amount of Token B to be added to the liquidity pool"
+					}
+				},
+				"getPrice(address)": {
+					"params": {
+						"_token": "The address of the token whose price is being queried"
+					},
+					"returns": {
+						"_0": "The price of the given token in terms of the other token"
+					}
+				},
+				"removeLiquidity(uint256,uint256)": {
+					"params": {
+						"amountA": "The amount of Token A to be removed from the liquidity pool",
+						"amountB": "The amount of Token B to be removed from the liquidity pool"
+					}
+				},
+				"swapAforB(uint256)": {
+					"params": {
+						"amountAIn": "The amount of Token A to be exchanged for Token B"
+					}
+				},
+				"swapBforA(uint256)": {
+					"params": {
+						"amountBIn": "The amount of Token B to be exchanged for Token A"
+					}
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"addLiquidity(uint256,uint256)": {
+					"notice": "Adds liquidity to the pool by transferring tokens from the provider to the contract"
+				},
+				"getPrice(address)": {
+					"notice": "Gets the current price of a token in terms of the other token in the pool"
+				},
+				"removeLiquidity(uint256,uint256)": {
+					"notice": "Removes liquidity from the pool by transferring tokens from the contract to the provider"
+				},
+				"swapAforB(uint256)": {
+					"notice": "Swaps Token A for Token B using the constant product formula (X * Y = k)"
+				},
+				"swapBforA(uint256)": {
+					"notice": "Swaps Token B for Token A using the constant product formula (X * Y = k)"
+				}
+			},
 			"version": 1
 		}
 	},
@@ -278,11 +326,11 @@
 			]
 		},
 		"SimpleDEX.sol": {
-			"keccak256": "0xbce8bbd859134a30343bd5545d30bcc328a26e8ad85fa2e867224b2e666578d0",
+			"keccak256": "0x976c413c98edda92131c5c467163bb83c6c76a0c699763b6695823ae93e5bbe5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0d3fdbb966f4ea690bb74673c34f27b7f3a012e05cf25583e81129c78511a230",
-				"dweb:/ipfs/QmfBers7fTom7uQivHyLntvcizHuBepL3uxjSAM5wtERkA"
+				"bzz-raw://731e7c8407765a00cd2f2bda50dce75e42de274b93d214a349e29842b2303db1",
+				"dweb:/ipfs/QmNtnV2ZPgNRXQN7GGiF7ry7RbsL3FhW7HKHf89zpbYyn3"
 			]
 		}
 	},
