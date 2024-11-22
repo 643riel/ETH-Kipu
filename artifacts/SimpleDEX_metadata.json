@@ -148,6 +148,44 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "liquidityA",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "liquidityB",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "amountA",
 						"type": "uint256"
@@ -257,7 +295,7 @@
 						"_token": "The address of the token whose price is being queried"
 					},
 					"returns": {
-						"_0": "The price of the given token in terms of the other token"
+						"_0": "The price of the given token in terms of the other token (scaled to 1e18)"
 					}
 				},
 				"removeLiquidity(uint256,uint256)": {
@@ -326,11 +364,11 @@
 			]
 		},
 		"SimpleDEX.sol": {
-			"keccak256": "0x976c413c98edda92131c5c467163bb83c6c76a0c699763b6695823ae93e5bbe5",
+			"keccak256": "0x14a4e247609ffa64e2d72b3fc5d62fd01c474aa3e12f8cca596050369ecae504",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://731e7c8407765a00cd2f2bda50dce75e42de274b93d214a349e29842b2303db1",
-				"dweb:/ipfs/QmNtnV2ZPgNRXQN7GGiF7ry7RbsL3FhW7HKHf89zpbYyn3"
+				"bzz-raw://c254cbc785d45f37909adc7fe461840757330c1286cd41d77de977e885e5e305",
+				"dweb:/ipfs/QmNiD9M9oWyqWMKKc5yYqg7feRgTwS4AZMDwUnPLu5mQqM"
 			]
 		}
 	},

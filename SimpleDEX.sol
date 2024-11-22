@@ -10,6 +10,10 @@ contract SimpleDEX {
     uint256 public reserveA; // Reserve of Token A in the pool
     uint256 public reserveB; // Reserve of Token B in the pool
 
+    // Mappings to track liquidity contributions by provider
+    mapping(address => uint256) public liquidityA;
+    mapping(address => uint256) public liquidityB;
+
     // Events to log important actions
     event LiquidityAdded(address indexed provider, uint256 amountA, uint256 amountB);
     event LiquidityRemoved(address indexed provider, uint256 amountA, uint256 amountB);
@@ -28,18 +32,18 @@ contract SimpleDEX {
     /// as the ERC-20 transferFrom function automatically reverts the transaction if the approval is insufficient.
     //  (En un momento pensé en agregar más validaciones, pero dsp me di cuenta que no es necesario). 
     function addLiquidity(uint256 amountA, uint256 amountB) external {
-        // Require non-zero amounts to be added to the liquidity pool
         require(amountA > 0 && amountB > 0, "Cannot add zero liquidity");
 
-        // Transfer the specified amounts of Token A and Token B from the provider to the contract
         IERC20(tokenA).transferFrom(msg.sender, address(this), amountA);
         IERC20(tokenB).transferFrom(msg.sender, address(this), amountB);
 
-        // Update the reserves in the contract after adding liquidity
         reserveA += amountA;
         reserveB += amountB;
 
-        // Emit an event to log the liquidity addition
+        // Record the liquidity contribution for the provider
+        liquidityA[msg.sender] += amountA;
+        liquidityB[msg.sender] += amountB;
+
         emit LiquidityAdded(msg.sender, amountA, amountB);
     }
 
@@ -47,21 +51,31 @@ contract SimpleDEX {
     /// @param amountA The amount of Token A to be removed from the liquidity pool
     /// @param amountB The amount of Token B to be removed from the liquidity pool
     function removeLiquidity(uint256 amountA, uint256 amountB) external {
-        // Require that the amounts to be removed are valid and within the pool's liquidity
         require(amountA > 0 && amountB > 0, "Invalid amounts");
         require(reserveA >= amountA && reserveB >= amountB, "Insufficient liquidity");
 
-        // Transfer the specified amounts of Token A and Token B back to the provider
+        // Ensure the provider is not removing more than they contributed
+        require(liquidityA[msg.sender] >= amountA, "Exceeds contributed liquidity for Token A");
+        require(liquidityB[msg.sender] >= amountB, "Exceeds contributed liquidity for Token B");
+
         IERC20(tokenA).transfer(msg.sender, amountA);
         IERC20(tokenB).transfer(msg.sender, amountB);
 
-        // Update the reserves in the contract after removing liquidity
         reserveA -= amountA;
         reserveB -= amountB;
 
-        // Emit an event to log the liquidity removal
+        // Deduct the withdrawn liquidity from the provider's record
+        liquidityA[msg.sender] -= amountA;
+        liquidityB[msg.sender] -= amountB;
+
         emit LiquidityRemoved(msg.sender, amountA, amountB);
     }
+
+    // AL REALIZAR SWAPS, SE PUEDEN PERDER TOKENS POR EL REDONDEO DE DECIMALES.
+    // Por ejemplo, si tengo 100 de A y 200 de B, y cambio 10 de A por una cantidad de B
+    // determinada por la fórmula X * Y = K, luego, al intercambiar ese delta de tokens de B,
+    // es posible que termine con menos de A debido a las pérdidas por redondeo durante los cálculos de la transacción.
+    // Pensé en multiplicar por 1e18 acá, pero no lo hice porque podría causar problemas con el gas y los valores.
 
     /// @notice Swaps Token A for Token B using the constant product formula (X * Y = k)
     /// @param amountAIn The amount of Token A to be exchanged for Token B
@@ -124,23 +138,18 @@ contract SimpleDEX {
 
     /// @notice Gets the current price of a token in terms of the other token in the pool
     /// @param _token The address of the token whose price is being queried
-    /// @return The price of the given token in terms of the other token
+    /// @return The price of the given token in terms of the other token (scaled to 1e18)
     function getPrice(address _token) external view returns (uint256) {
         // Ensure the token address is either Token A or Token B
         require(_token == tokenA || _token == tokenB, "Invalid token address");
 
-        // If the queried token is Token A, return its price in terms of Token B
-        // 1e18 is used to scale the result and maintain precision, avoiding floating-point errors
-
-        uint256 price;
+        // Calculate and return the price scaled to 1e18 for precision
         if (_token == tokenA) {
-            price = (reserveB * 1e18) / reserveA; // Price of Token A in terms of Token B
+            return (reserveB * 1e18) / reserveA; // Price of Token A in terms of Token B
         } else {
-            price = (reserveA * 1e18) / reserveB; // Price of Token B in terms of Token A
+            return (reserveA * 1e18) / reserveB; // Price of Token B in terms of Token A
         }
-
-        // Convert the result to the "real" price by dividing by 1e18
-        return price / 1e18;
     }
+
 
 }
