@@ -230,7 +230,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"TokenA_flattened.sol": "IERC20"
+			"SimpleDEX_flattened.sol": "IERC20"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -244,11 +244,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"TokenA_flattened.sol": {
-			"keccak256": "0xa3fbb0a3da39189120e3f8ca95092c2319816fdff6f2848bced81ff62249487f",
+		"SimpleDEX_flattened.sol": {
+			"keccak256": "0x3ce58686bb0d204c30c0aba292a5536e7d96755b892db15f3e09a30613d04960",
 			"urls": [
-				"bzz-raw://7cab83fcab9615cffb17bb9963eaa8dd0a137bba1de489dafc15b89a734af95d",
-				"dweb:/ipfs/QmQRA4X5684LYrnNVaMXXdDwZrHjRhQHauzyALyQeHFoRz"
+				"bzz-raw://0a102839ae3187e9e2c0796fb64c7bffd192a13bab6a140df1b17d154603329a",
+				"dweb:/ipfs/QmRoG6EY6wXE87gxwyostYi7aJDrYRBCW5ikZQ5ipQYTFX"
 			]
 		}
 	},

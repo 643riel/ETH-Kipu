@@ -103,6 +103,12 @@
 						"internalType": "uint256",
 						"name": "amountOut",
 						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "direction",
+						"type": "bool"
 					}
 				],
 				"name": "TokensSwapped",
@@ -282,66 +288,18 @@
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {
-				"addLiquidity(uint256,uint256)": {
-					"details": "No need to validate that amountA and amountB are less than or equal to the approved amount,  as the ERC-20 transferFrom function automatically reverts the transaction if the approval is insufficient.",
-					"params": {
-						"amountA": "The amount of Token A to be added to the liquidity pool",
-						"amountB": "The amount of Token B to be added to the liquidity pool"
-					}
-				},
-				"getPrice(address)": {
-					"params": {
-						"_token": "The address of the token whose price is being queried"
-					},
-					"returns": {
-						"_0": "The price of the given token in terms of the other token (scaled to 1e18)"
-					}
-				},
-				"removeLiquidity(uint256,uint256)": {
-					"params": {
-						"amountA": "The amount of Token A to be removed from the liquidity pool",
-						"amountB": "The amount of Token B to be removed from the liquidity pool"
-					}
-				},
-				"swapAforB(uint256)": {
-					"params": {
-						"amountAIn": "The amount of Token A to be exchanged for Token B"
-					}
-				},
-				"swapBforA(uint256)": {
-					"params": {
-						"amountBIn": "The amount of Token B to be exchanged for Token A"
-					}
-				}
-			},
+			"methods": {},
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {
-				"addLiquidity(uint256,uint256)": {
-					"notice": "Adds liquidity to the pool by transferring tokens from the provider to the contract"
-				},
-				"getPrice(address)": {
-					"notice": "Gets the current price of a token in terms of the other token in the pool"
-				},
-				"removeLiquidity(uint256,uint256)": {
-					"notice": "Removes liquidity from the pool by transferring tokens from the contract to the provider"
-				},
-				"swapAforB(uint256)": {
-					"notice": "Swaps Token A for Token B using the constant product formula (X * Y = k)"
-				},
-				"swapBforA(uint256)": {
-					"notice": "Swaps Token B for Token A using the constant product formula (X * Y = k)"
-				}
-			},
+			"methods": {},
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"SimpleDEX.sol": "SimpleDEX"
+			"SimpleDEX_flattened.sol": "SimpleDEX"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -355,28 +313,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
-			"license": "MIT",
+		"SimpleDEX_flattened.sol": {
+			"keccak256": "0x3ce58686bb0d204c30c0aba292a5536e7d96755b892db15f3e09a30613d04960",
 			"urls": [
-				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
-				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
-			]
-		},
-		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
-			"keccak256": "0x70f2f713b13b7ce4610bcd0ac9fec0f3cc43693b043abcb8dc40a42a726eb330",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://c13d13304ac79a83ab1c30168967d19e2203342ebbd6a9bbce4db7550522dcbf",
-				"dweb:/ipfs/QmeN5jKMN2vw5bhacr6tkg78afbTTZUeaacNHqjWt4Ew1r"
-			]
-		},
-		"SimpleDEX.sol": {
-			"keccak256": "0xae20c61967650a49a19d30b6c707ee351dd4564573471bc83403082ddffc99b9",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://f45fac26ef0e5b39f6f5614371a4c333cc48eca2ea649d024334932e89729bb9",
-				"dweb:/ipfs/QmYsTrqLoPuFuJmDUfcWSnnNucwN1QUCrukJ5kdztQrbNV"
+				"bzz-raw://0a102839ae3187e9e2c0796fb64c7bffd192a13bab6a140df1b17d154603329a",
+				"dweb:/ipfs/QmRoG6EY6wXE87gxwyostYi7aJDrYRBCW5ikZQ5ipQYTFX"
 			]
 		}
 	},
