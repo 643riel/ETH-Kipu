@@ -22,14 +22,30 @@
 				"type": "constructor"
 			},
 			{
-				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": true,
 						"internalType": "address",
-						"name": "provider",
+						"name": "owner",
 						"type": "address"
-					},
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
 					{
 						"indexed": false,
 						"internalType": "uint256",
@@ -50,12 +66,6 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "provider",
-						"type": "address"
-					},
-					{
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "amountA",
@@ -69,6 +79,25 @@
 					}
 				],
 				"name": "LiquidityRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
 				"type": "event"
 			},
 			{
@@ -152,38 +181,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					}
-				],
-				"name": "liquidityA",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "liquidityB",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -203,6 +207,13 @@
 					}
 				],
 				"name": "removeLiquidity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -284,22 +295,112 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
+			"errors": {
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				]
+			},
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"addLiquidity(uint256,uint256)": {
+					"params": {
+						"amountA": "Cantidad de Token A para agregar",
+						"amountB": "Cantidad de Token B para agregar"
+					}
+				},
+				"constructor": {
+					"params": {
+						"_tokenA": "Dirección del Token A",
+						"_tokenB": "Dirección del Token B"
+					}
+				},
+				"getPrice(address)": {
+					"params": {
+						"_token": "Dirección del token a evaluar"
+					},
+					"returns": {
+						"_0": "El precio en términos del otro token"
+					}
+				},
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"removeLiquidity(uint256,uint256)": {
+					"params": {
+						"amountA": "Cantidad de Token A para retirar",
+						"amountB": "Cantidad de Token B para retirar"
+					}
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+				},
+				"swapAforB(uint256)": {
+					"params": {
+						"amountAIn": "Cantidad de Token A a intercambiar"
+					}
+				},
+				"swapBforA(uint256)": {
+					"params": {
+						"amountBIn": "Cantidad de Token B a intercambiar"
+					}
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"addLiquidity(uint256,uint256)": {
+					"notice": "Agrega liquidez al pool (solo el propietario puede llamar)"
+				},
+				"constructor": {
+					"notice": "Constructor para inicializar los tokens"
+				},
+				"getPrice(address)": {
+					"notice": "Obtiene el precio de un token relativo al otro"
+				},
+				"removeLiquidity(uint256,uint256)": {
+					"notice": "Remueve liquidez del pool (solo el propietario puede llamar)"
+				},
+				"swapAforB(uint256)": {
+					"notice": "Intercambia Token A por Token B"
+				},
+				"swapBforA(uint256)": {
+					"notice": "Intercambia Token B por Token A"
+				}
+			},
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"SimpleDEX_flattened.sol": "SimpleDEX"
+			"SimpleDEX.sol": "SimpleDEX"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -313,11 +414,36 @@
 		"remappings": []
 	},
 	"sources": {
-		"SimpleDEX_flattened.sol": {
-			"keccak256": "0x3ce58686bb0d204c30c0aba292a5536e7d96755b892db15f3e09a30613d04960",
+		"@openzeppelin/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://0a102839ae3187e9e2c0796fb64c7bffd192a13bab6a140df1b17d154603329a",
-				"dweb:/ipfs/QmRoG6EY6wXE87gxwyostYi7aJDrYRBCW5ikZQ5ipQYTFX"
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
+				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"SimpleDEX.sol": {
+			"keccak256": "0x9d5b861c2a20dba3cdc137645e5a0d4ecd3ed0ddf4df4fb3db4aaee27e6d75a2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3a2fdc704871c9db710d6fbab85bad8f529adbe86d2c8036d737b68f6162916a",
+				"dweb:/ipfs/Qmd2XBc1W7tu8J1nbm7w5sUANZzUKnmoWtQEujb1NEN6PZ"
 			]
 		}
 	},
