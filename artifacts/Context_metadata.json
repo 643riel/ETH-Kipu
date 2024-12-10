@@ -19,7 +19,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"TokenA_flattened.sol": "Context"
+			"SimpleDEX_flattened.sol": "Context"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -33,11 +33,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"TokenA_flattened.sol": {
-			"keccak256": "0xa3fbb0a3da39189120e3f8ca95092c2319816fdff6f2848bced81ff62249487f",
+		"SimpleDEX_flattened.sol": {
+			"keccak256": "0x69c4e9463044bc5e713475d1956a6679bd7070d4ef46db4c3c52458177ff62a6",
 			"urls": [
-				"bzz-raw://7cab83fcab9615cffb17bb9963eaa8dd0a137bba1de489dafc15b89a734af95d",
-				"dweb:/ipfs/QmQRA4X5684LYrnNVaMXXdDwZrHjRhQHauzyALyQeHFoRz"
+				"bzz-raw://1d2152928ce6ea33a698c791d34869538e0a2a007f3fc560799ecb89cd4ce22d",
+				"dweb:/ipfs/QmcKrxNRx4LrwdZ7nyM6RxXoVTG7mXdKkAogq5QM8jNA9q"
 			]
 		}
 	},
