@@ -1,114 +1,129 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.22;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/// @title Simple Decentralized Exchange (DEX)
+/// @notice Contrato para intercambiar tokens y gestionar liquidez
+/// @dev Implementa la fórmula de producto constante para intercambios
+/// @author [Gabriel Iakantas]
 contract SimpleDEX is Ownable {
-    address public tokenA; // Dirección del primer token (Token A)
-    address public tokenB; // Dirección del segundo token (Token B)
+    /// @notice Token A en el pool de liquidez
+    IERC20 public tokenA;
 
-    uint256 public reserveA; // Reserva del Token A en el pool
-    uint256 public reserveB; // Reserva del Token B en el pool
+    /// @notice Token B en el pool de liquidez
+    IERC20 public tokenB;
 
+    /// @notice Evento emitido al agregar liquidez
+    /// @param amountA Cantidad de token A agregada
+    /// @param amountB Cantidad de token B agregada
     event LiquidityAdded(uint256 amountA, uint256 amountB);
+
+    /// @notice Evento emitido al remover liquidez
+    /// @param amountA Cantidad de token A removida
+    /// @param amountB Cantidad de token B removida
     event LiquidityRemoved(uint256 amountA, uint256 amountB);
-    event TokensSwapped(
-        address indexed trader,
-        address tokenIn,
-        address tokenOut,
-        uint256 amountIn,
-        uint256 amountOut,
-        bool direction // true: A -> B, false: B -> A
-    );
 
-    /// @notice Constructor para inicializar los tokens
-    /// @param _tokenA Dirección del Token A
-    /// @param _tokenB Dirección del Token B
+    /// @notice Evento emitido al realizar un intercambio
+    /// @param user Dirección del usuario que realizó el intercambio
+    /// @param amountIn Cantidad del token de entrada
+    /// @param amountOut Cantidad del token de salida
+    event TokenSwapped(address indexed user, uint256 amountIn, uint256 amountOut);
+
+    /// @notice Constructor para inicializar el contrato con los tokens
+    /// @param _tokenA Dirección del token A
+    /// @param _tokenB Dirección del token B
     constructor(address _tokenA, address _tokenB) Ownable(msg.sender) {
-        require(_tokenA != address(0) && _tokenB != address(0), "Invalid token address");
+        require(_tokenA != address(0) && _tokenB != address(0), "Token address cannot be 0");
         require(_tokenA != _tokenB, "Tokens must be different");
-
-        tokenA = _tokenA;
-        tokenB = _tokenB;
+        
+        tokenA = IERC20(_tokenA);
+        tokenB = IERC20(_tokenB);
     }
-    /// @notice Agrega liquidez al pool (solo el propietario puede llamar)
-    /// @param amountA Cantidad de Token A para agregar
-    /// @param amountB Cantidad de Token B para agregar
+
+    /// @notice Agrega liquidez al pool
+    /// @dev Solo puede ser llamado por el propietario
+    /// @param amountA Cantidad de token A a agregar
+    /// @param amountB Cantidad de token B a agregar
     function addLiquidity(uint256 amountA, uint256 amountB) external onlyOwner {
-        require(amountA > 0 && amountB > 0, "Zero liquidity");
-
-        IERC20(tokenA).transferFrom(msg.sender, address(this), amountA);
-        IERC20(tokenB).transferFrom(msg.sender, address(this), amountB);
-
-        reserveA += amountA;
-        reserveB += amountB;
+        require(amountA > 0 && amountB > 0, "Amounts must be > 0");
+        
+        tokenA.transferFrom(msg.sender, address(this), amountA);
+        tokenB.transferFrom(msg.sender, address(this), amountB);
 
         emit LiquidityAdded(amountA, amountB);
     }
 
-    /// @notice Remueve liquidez del pool (solo el propietario puede llamar)
-    /// @param amountA Cantidad de Token A para retirar
-    /// @param amountB Cantidad de Token B para retirar
+    /// @notice Remueve liquidez del pool
+    /// @dev Solo puede ser llamado por el propietario
+    /// @param amountA Cantidad de token A a remover
+    /// @param amountB Cantidad de token B a remover
     function removeLiquidity(uint256 amountA, uint256 amountB) external onlyOwner {
-        require(amountA > 0 && amountB > 0, "Invalid amounts");
-        require(reserveA >= amountA && reserveB >= amountB, "Low liquidity");
+        uint256 balanceA = tokenA.balanceOf(address(this));
+        uint256 balanceB = tokenB.balanceOf(address(this));
+        require(amountA <= balanceA && amountB <= balanceB, "Not enough liquidity available");
 
-        IERC20(tokenA).transfer(msg.sender, amountA);
-        IERC20(tokenB).transfer(msg.sender, amountB);
-
-        reserveA -= amountA;
-        reserveB -= amountB;
+        tokenA.transfer(msg.sender, amountA);
+        tokenB.transfer(msg.sender, amountB);
 
         emit LiquidityRemoved(amountA, amountB);
     }
 
-    /// @notice Intercambia Token A por Token B
-    /// @param amountAIn Cantidad de Token A a intercambiar
+    /// @notice Intercambia token A por token B
+    /// @param amountAIn Cantidad de token A para intercambiar
     function swapAforB(uint256 amountAIn) external {
-        require(amountAIn > 0, "Zero input");
-        require(reserveA > 0 && reserveB > 0, "Low liquidity");
+        require(amountAIn > 0, "Input amount must be > 0");
 
-        uint256 amountBOut = (amountAIn * reserveB) / (reserveA + amountAIn);
-        require(amountBOut > 0, "Low output");
+        uint256 balanceA = tokenA.balanceOf(address(this));
+        uint256 balanceB = tokenB.balanceOf(address(this));
+        require(balanceA > 0 && balanceB > 0, "Insufficient liquidity");
 
-        IERC20(tokenA).transferFrom(msg.sender, address(this), amountAIn);
-        IERC20(tokenB).transfer(msg.sender, amountBOut);
+        uint256 amountBOut = getAmountOut(amountAIn, balanceA, balanceB);
 
-        reserveA += amountAIn;
-        reserveB -= amountBOut;
+        tokenA.transferFrom(msg.sender, address(this), amountAIn);
+        tokenB.transfer(msg.sender, amountBOut);
 
-        emit TokensSwapped(msg.sender, tokenA, tokenB, amountAIn, amountBOut, true);
+        emit TokenSwapped(msg.sender, amountAIn, amountBOut);
     }
 
-    /// @notice Intercambia Token B por Token A
-    /// @param amountBIn Cantidad de Token B a intercambiar
+    /// @notice Intercambia token B por token A
+    /// @param amountBIn Cantidad de token B para intercambiar
     function swapBforA(uint256 amountBIn) external {
-        require(amountBIn > 0, "Zero input");
-        require(reserveA > 0 && reserveB > 0, "Low liquidity");
+        require(amountBIn > 0, "Input amount must be > 0");
 
-        uint256 amountAOut = (amountBIn * reserveA) / (reserveB + amountBIn);
-        require(amountAOut > 0, "Low output");
+        uint256 balanceA = tokenA.balanceOf(address(this));
+        uint256 balanceB = tokenB.balanceOf(address(this));
+        require(balanceA > 0 && balanceB > 0, "Insufficient liquidity");
 
-        IERC20(tokenB).transferFrom(msg.sender, address(this), amountBIn);
-        IERC20(tokenA).transfer(msg.sender, amountAOut);
+        uint256 amountAOut = getAmountOut(amountBIn, balanceB, balanceA);
 
-        reserveB += amountBIn;
-        reserveA -= amountAOut;
+        tokenB.transferFrom(msg.sender, address(this), amountBIn);
+        tokenA.transfer(msg.sender, amountAOut);
 
-        emit TokensSwapped(msg.sender, tokenB, tokenA, amountBIn, amountAOut, false);
+        emit TokenSwapped(msg.sender, amountBIn, amountAOut);
     }
 
-    /// @notice Obtiene el precio de un token relativo al otro
+    /// @notice Calcula el precio relativo de un token
     /// @param _token Dirección del token a evaluar
-    /// @return El precio en términos del otro token
+    /// @return Precio relativo en términos del otro token
     function getPrice(address _token) external view returns (uint256) {
-        require(_token == tokenA || _token == tokenB, "Invalid token");
+        require(_token == address(tokenA) || _token == address(tokenB), "Invalid token address");
 
-        if (_token == tokenA) {
-            return (reserveB * 1e18) / reserveA;
-        } else {
-            return (reserveA * 1e18) / reserveB;
-        }
+        uint256 balanceA = tokenA.balanceOf(address(this));
+        uint256 balanceB = tokenB.balanceOf(address(this));
+        return _token == address(tokenA)
+            ? (balanceB * 1e18) / balanceA
+            : (balanceA * 1e18) / balanceB;
+    }
+
+    /// @notice Calcula la cantidad de tokens de salida basándose en la fórmula de producto constante
+    /// @param amountIn Cantidad de tokens de entrada
+    /// @param reserveIn Reserva del token de entrada
+    /// @param reserveOut Reserva del token de salida
+    /// @return Cantidad de tokens de salida
+    function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) private pure returns (uint256) {
+        require(reserveIn > 0 && reserveOut > 0, "Insufficient reserves");
+        return (amountIn * reserveOut) / (reserveIn + amountIn);
     }
 }

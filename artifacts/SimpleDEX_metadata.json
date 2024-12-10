@@ -106,19 +106,7 @@
 					{
 						"indexed": true,
 						"internalType": "address",
-						"name": "trader",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "tokenIn",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "tokenOut",
+						"name": "user",
 						"type": "address"
 					},
 					{
@@ -132,15 +120,9 @@
 						"internalType": "uint256",
 						"name": "amountOut",
 						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "direction",
-						"type": "bool"
 					}
 				],
-				"name": "TokensSwapped",
+				"name": "TokenSwapped",
 				"type": "event"
 			},
 			{
@@ -219,32 +201,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "reserveA",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "reserveB",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -275,7 +231,7 @@
 				"name": "tokenA",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "contract IERC20",
 						"name": "",
 						"type": "address"
 					}
@@ -288,7 +244,7 @@
 				"name": "tokenB",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "contract IERC20",
 						"name": "",
 						"type": "address"
 					}
@@ -311,6 +267,8 @@
 			}
 		],
 		"devdoc": {
+			"author": "[Gabriel Iakantas]",
+			"details": "Implementa la fórmula de producto constante para intercambios",
 			"errors": {
 				"OwnableInvalidOwner(address)": [
 					{
@@ -323,18 +281,40 @@
 					}
 				]
 			},
+			"events": {
+				"LiquidityAdded(uint256,uint256)": {
+					"params": {
+						"amountA": "Cantidad de token A agregada",
+						"amountB": "Cantidad de token B agregada"
+					}
+				},
+				"LiquidityRemoved(uint256,uint256)": {
+					"params": {
+						"amountA": "Cantidad de token A removida",
+						"amountB": "Cantidad de token B removida"
+					}
+				},
+				"TokenSwapped(address,uint256,uint256)": {
+					"params": {
+						"amountIn": "Cantidad del token de entrada",
+						"amountOut": "Cantidad del token de salida",
+						"user": "Dirección del usuario que realizó el intercambio"
+					}
+				}
+			},
 			"kind": "dev",
 			"methods": {
 				"addLiquidity(uint256,uint256)": {
+					"details": "Solo puede ser llamado por el propietario",
 					"params": {
-						"amountA": "Cantidad de Token A para agregar",
-						"amountB": "Cantidad de Token B para agregar"
+						"amountA": "Cantidad de token A a agregar",
+						"amountB": "Cantidad de token B a agregar"
 					}
 				},
 				"constructor": {
 					"params": {
-						"_tokenA": "Dirección del Token A",
-						"_tokenB": "Dirección del Token B"
+						"_tokenA": "Dirección del token A",
+						"_tokenB": "Dirección del token B"
 					}
 				},
 				"getPrice(address)": {
@@ -342,16 +322,17 @@
 						"_token": "Dirección del token a evaluar"
 					},
 					"returns": {
-						"_0": "El precio en términos del otro token"
+						"_0": "Precio relativo en términos del otro token"
 					}
 				},
 				"owner()": {
 					"details": "Returns the address of the current owner."
 				},
 				"removeLiquidity(uint256,uint256)": {
+					"details": "Solo puede ser llamado por el propietario",
 					"params": {
-						"amountA": "Cantidad de Token A para retirar",
-						"amountB": "Cantidad de Token B para retirar"
+						"amountA": "Cantidad de token A a remover",
+						"amountB": "Cantidad de token B a remover"
 					}
 				},
 				"renounceOwnership()": {
@@ -359,42 +340,61 @@
 				},
 				"swapAforB(uint256)": {
 					"params": {
-						"amountAIn": "Cantidad de Token A a intercambiar"
+						"amountAIn": "Cantidad de token A para intercambiar"
 					}
 				},
 				"swapBforA(uint256)": {
 					"params": {
-						"amountBIn": "Cantidad de Token B a intercambiar"
+						"amountBIn": "Cantidad de token B para intercambiar"
 					}
 				},
 				"transferOwnership(address)": {
 					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
 				}
 			},
+			"title": "Simple Decentralized Exchange (DEX)",
 			"version": 1
 		},
 		"userdoc": {
+			"events": {
+				"LiquidityAdded(uint256,uint256)": {
+					"notice": "Evento emitido al agregar liquidez"
+				},
+				"LiquidityRemoved(uint256,uint256)": {
+					"notice": "Evento emitido al remover liquidez"
+				},
+				"TokenSwapped(address,uint256,uint256)": {
+					"notice": "Evento emitido al realizar un intercambio"
+				}
+			},
 			"kind": "user",
 			"methods": {
 				"addLiquidity(uint256,uint256)": {
-					"notice": "Agrega liquidez al pool (solo el propietario puede llamar)"
+					"notice": "Agrega liquidez al pool"
 				},
 				"constructor": {
-					"notice": "Constructor para inicializar los tokens"
+					"notice": "Constructor para inicializar el contrato con los tokens"
 				},
 				"getPrice(address)": {
-					"notice": "Obtiene el precio de un token relativo al otro"
+					"notice": "Calcula el precio relativo de un token"
 				},
 				"removeLiquidity(uint256,uint256)": {
-					"notice": "Remueve liquidez del pool (solo el propietario puede llamar)"
+					"notice": "Remueve liquidez del pool"
 				},
 				"swapAforB(uint256)": {
-					"notice": "Intercambia Token A por Token B"
+					"notice": "Intercambia token A por token B"
 				},
 				"swapBforA(uint256)": {
-					"notice": "Intercambia Token B por Token A"
+					"notice": "Intercambia token B por token A"
+				},
+				"tokenA()": {
+					"notice": "Token A en el pool de liquidez"
+				},
+				"tokenB()": {
+					"notice": "Token B en el pool de liquidez"
 				}
 			},
+			"notice": "Contrato para intercambiar tokens y gestionar liquidez",
 			"version": 1
 		}
 	},
@@ -439,11 +439,11 @@
 			]
 		},
 		"SimpleDEX.sol": {
-			"keccak256": "0x9d5b861c2a20dba3cdc137645e5a0d4ecd3ed0ddf4df4fb3db4aaee27e6d75a2",
+			"keccak256": "0x3f488ec5724e99c54e40f79d07d28a94c8bfb2cb6ff8c41f21d41f033574ac2a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3a2fdc704871c9db710d6fbab85bad8f529adbe86d2c8036d737b68f6162916a",
-				"dweb:/ipfs/Qmd2XBc1W7tu8J1nbm7w5sUANZzUKnmoWtQEujb1NEN6PZ"
+				"bzz-raw://ef21b4e6643d8075162c06b8e66bf63e2a88a79cbe21c5b6d3fb523ad0c5d822",
+				"dweb:/ipfs/QmcbBfcfE4dyhWqw8nKWsKY7oFSpHLfTERA1B3uqjhESsh"
 			]
 		}
 	},
