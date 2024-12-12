@@ -175,10 +175,11 @@
 	},
 	"sources": {
 		"TokenA_flattened.sol": {
-			"keccak256": "0xa3fbb0a3da39189120e3f8ca95092c2319816fdff6f2848bced81ff62249487f",
+			"keccak256": "0x8e4ddb36c82e8ff29b4945b8ea4634faf61dcf02a9211a296419a208f24a8e60",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://7cab83fcab9615cffb17bb9963eaa8dd0a137bba1de489dafc15b89a734af95d",
-				"dweb:/ipfs/QmQRA4X5684LYrnNVaMXXdDwZrHjRhQHauzyALyQeHFoRz"
+				"bzz-raw://c8907942210c0e289c7b234d03ded4e84adb6ed49b47ec372b78104deab85312",
+				"dweb:/ipfs/QmbbacJWn8ZKymgQ8TVCdX6jkPQ9oXgAu99ArPK13qfrFh"
 			]
 		}
 	},

@@ -1,4 +1,4 @@
-
+// SPDX-License-Identifier: MIT
 // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
 
@@ -85,6 +85,7 @@ interface IERC20 {
 
 
 // OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)
+
 
 /**
  * @dev Provides information about the current execution context, including the
@@ -211,10 +212,15 @@ abstract contract Ownable is Context {
 
 // File: SimpleDEX.sol
 
-/// @title Simple Decentralized Exchange (DEX)
-/// @notice Contrato para intercambiar tokens y gestionar liquidez
-/// @dev Implementa la fórmula de producto constante para intercambios
-/// @author [Gabriel Iakantas]
+
+pragma solidity ^0.8.22;
+
+
+
+/// @title Intercambio Descentralizado Simple (DEX)
+/// @notice Este contrato facilita los intercambios de tokens y la gestión de liquidez
+/// @dev Utiliza la fórmula de producto constante para los intercambios
+/// @author [Gabriel iakantas]
 contract SimpleDEX is Ownable {
     /// @notice Token A en el pool de liquidez
     IERC20 public tokenA;
@@ -222,54 +228,51 @@ contract SimpleDEX is Ownable {
     /// @notice Token B en el pool de liquidez
     IERC20 public tokenB;
 
-    /// @notice Evento emitido al agregar liquidez
-    /// @param amountA Cantidad de token A agregada
-    /// @param amountB Cantidad de token B agregada
+    /// @notice Emitido cuando se agrega liquidez
+    /// @param amountA La cantidad de token A añadida
+    /// @param amountB La cantidad de token B añadida
     event LiquidityAdded(uint256 amountA, uint256 amountB);
 
-    /// @notice Evento emitido al remover liquidez
-    /// @param amountA Cantidad de token A removida
-    /// @param amountB Cantidad de token B removida
+    /// @notice Emitido cuando se retira liquidez
+    /// @param amountA La cantidad de token A retirada
+    /// @param amountB La cantidad de token B retirada
     event LiquidityRemoved(uint256 amountA, uint256 amountB);
 
-    /// @notice Evento emitido al realizar un intercambio
-    /// @param user Dirección del usuario que realizó el intercambio
-    /// @param amountIn Cantidad del token de entrada
-    /// @param amountOut Cantidad del token de salida
+    /// @notice Emitido cuando ocurre un intercambio de tokens
+    /// @param user La dirección del usuario que realiza el intercambio
+    /// @param amountIn La cantidad de tokens de entrada
+    /// @param amountOut La cantidad de tokens de salida
     event TokenSwapped(address indexed user, uint256 amountIn, uint256 amountOut);
 
-    /// @notice Constructor para inicializar el contrato con los tokens
+    /// @notice Inicializa el DEX con dos tokens
     /// @param _tokenA Dirección del token A
     /// @param _tokenB Dirección del token B
     constructor(address _tokenA, address _tokenB) Ownable(msg.sender) {
-        require(_tokenA != address(0) && _tokenB != address(0), "Token address cannot be 0");
-        require(_tokenA != _tokenB, "Tokens must be different");
-        
         tokenA = IERC20(_tokenA);
         tokenB = IERC20(_tokenB);
     }
 
     /// @notice Agrega liquidez al pool
     /// @dev Solo puede ser llamado por el propietario
-    /// @param amountA Cantidad de token A a agregar
-    /// @param amountB Cantidad de token B a agregar
+    /// @param amountA La cantidad de token A para agregar
+    /// @param amountB La cantidad de token B para agregar
     function addLiquidity(uint256 amountA, uint256 amountB) external onlyOwner {
         require(amountA > 0 && amountB > 0, "Amounts must be > 0");
-        
         tokenA.transferFrom(msg.sender, address(this), amountA);
         tokenB.transferFrom(msg.sender, address(this), amountB);
 
         emit LiquidityAdded(amountA, amountB);
     }
 
-    /// @notice Remueve liquidez del pool
+    /// @notice Retira liquidez del pool
     /// @dev Solo puede ser llamado por el propietario
-    /// @param amountA Cantidad de token A a remover
-    /// @param amountB Cantidad de token B a remover
+    /// @param amountA La cantidad de token A para retirar
+    /// @param amountB La cantidad de token B para retirar
     function removeLiquidity(uint256 amountA, uint256 amountB) external onlyOwner {
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
-        require(amountA <= balanceA && amountB <= balanceB, "Not enough liquidity available");
+        
+        require(amountA <= balanceA && amountB <= balanceB, "Low liquidity");
 
         tokenA.transfer(msg.sender, amountA);
         tokenB.transfer(msg.sender, amountB);
@@ -278,14 +281,12 @@ contract SimpleDEX is Ownable {
     }
 
     /// @notice Intercambia token A por token B
-    /// @param amountAIn Cantidad de token A para intercambiar
+    /// @param amountAIn La cantidad de token A para intercambiar
     function swapAforB(uint256 amountAIn) external {
-        require(amountAIn > 0, "Input amount must be > 0");
+        require(amountAIn > 0, "Amount must be > 0");
 
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
-        require(balanceA > 0 && balanceB > 0, "Insufficient liquidity");
-
         uint256 amountBOut = getAmountOut(amountAIn, balanceA, balanceB);
 
         tokenA.transferFrom(msg.sender, address(this), amountAIn);
@@ -295,14 +296,12 @@ contract SimpleDEX is Ownable {
     }
 
     /// @notice Intercambia token B por token A
-    /// @param amountBIn Cantidad de token B para intercambiar
+    /// @param amountBIn La cantidad de token B para intercambiar
     function swapBforA(uint256 amountBIn) external {
-        require(amountBIn > 0, "Input amount must be > 0");
+        require(amountBIn > 0, "Amount must be > 0");
 
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
-        require(balanceA > 0 && balanceB > 0, "Insufficient liquidity");
-
         uint256 amountAOut = getAmountOut(amountBIn, balanceB, balanceA);
 
         tokenB.transferFrom(msg.sender, address(this), amountBIn);
@@ -311,26 +310,27 @@ contract SimpleDEX is Ownable {
         emit TokenSwapped(msg.sender, amountBIn, amountAOut);
     }
 
-    /// @notice Calcula el precio relativo de un token
-    /// @param _token Dirección del token a evaluar
-    /// @return Precio relativo en términos del otro token
+    /// @notice Obtiene el precio de un token en relación con el otro
+    /// @param _token Dirección del token para obtener su precio
+    /// @return El precio en términos del otro token
     function getPrice(address _token) external view returns (uint256) {
-        require(_token == address(tokenA) || _token == address(tokenB), "Invalid token address");
+        require(_token == address(tokenA) || _token == address(tokenB), "Invalid token");
 
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
-        return _token == address(tokenA)
+
+        return (_token == address(tokenA))
             ? (balanceB * 1e18) / balanceA
             : (balanceA * 1e18) / balanceB;
     }
 
-    /// @notice Calcula la cantidad de tokens de salida basándose en la fórmula de producto constante
-    /// @param amountIn Cantidad de tokens de entrada
-    /// @param reserveIn Reserva del token de entrada
-    /// @param reserveOut Reserva del token de salida
-    /// @return Cantidad de tokens de salida
+    /// @notice Calcula la cantidad de tokens que se obtendrán en un intercambio
+    /// @dev Implementa la fórmula de producto constante
+    /// @param amountIn La cantidad de tokens de entrada
+    /// @param reserveIn La reserva del token de entrada
+    /// @param reserveOut La reserva del token de salida
+    /// @return La cantidad de tokens de salida
     function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) private pure returns (uint256) {
-        require(reserveIn > 0 && reserveOut > 0, "Insufficient reserves");
         return (amountIn * reserveOut) / (reserveIn + amountIn);
     }
 }

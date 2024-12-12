@@ -267,8 +267,8 @@
 			}
 		],
 		"devdoc": {
-			"author": "[Gabriel Iakantas]",
-			"details": "Implementa la fórmula de producto constante para intercambios",
+			"author": "[Gabriel iakantas]",
+			"details": "Utiliza la fórmula de producto constante para los intercambios",
 			"errors": {
 				"OwnableInvalidOwner(address)": [
 					{
@@ -284,21 +284,21 @@
 			"events": {
 				"LiquidityAdded(uint256,uint256)": {
 					"params": {
-						"amountA": "Cantidad de token A agregada",
-						"amountB": "Cantidad de token B agregada"
+						"amountA": "La cantidad de token A añadida",
+						"amountB": "La cantidad de token B añadida"
 					}
 				},
 				"LiquidityRemoved(uint256,uint256)": {
 					"params": {
-						"amountA": "Cantidad de token A removida",
-						"amountB": "Cantidad de token B removida"
+						"amountA": "La cantidad de token A retirada",
+						"amountB": "La cantidad de token B retirada"
 					}
 				},
 				"TokenSwapped(address,uint256,uint256)": {
 					"params": {
-						"amountIn": "Cantidad del token de entrada",
-						"amountOut": "Cantidad del token de salida",
-						"user": "Dirección del usuario que realizó el intercambio"
+						"amountIn": "La cantidad de tokens de entrada",
+						"amountOut": "La cantidad de tokens de salida",
+						"user": "La dirección del usuario que realiza el intercambio"
 					}
 				}
 			},
@@ -307,8 +307,8 @@
 				"addLiquidity(uint256,uint256)": {
 					"details": "Solo puede ser llamado por el propietario",
 					"params": {
-						"amountA": "Cantidad de token A a agregar",
-						"amountB": "Cantidad de token B a agregar"
+						"amountA": "La cantidad de token A para agregar",
+						"amountB": "La cantidad de token B para agregar"
 					}
 				},
 				"constructor": {
@@ -319,10 +319,10 @@
 				},
 				"getPrice(address)": {
 					"params": {
-						"_token": "Dirección del token a evaluar"
+						"_token": "Dirección del token para obtener su precio"
 					},
 					"returns": {
-						"_0": "Precio relativo en términos del otro token"
+						"_0": "El precio en términos del otro token"
 					}
 				},
 				"owner()": {
@@ -331,8 +331,8 @@
 				"removeLiquidity(uint256,uint256)": {
 					"details": "Solo puede ser llamado por el propietario",
 					"params": {
-						"amountA": "Cantidad de token A a remover",
-						"amountB": "Cantidad de token B a remover"
+						"amountA": "La cantidad de token A para retirar",
+						"amountB": "La cantidad de token B para retirar"
 					}
 				},
 				"renounceOwnership()": {
@@ -340,31 +340,31 @@
 				},
 				"swapAforB(uint256)": {
 					"params": {
-						"amountAIn": "Cantidad de token A para intercambiar"
+						"amountAIn": "La cantidad de token A para intercambiar"
 					}
 				},
 				"swapBforA(uint256)": {
 					"params": {
-						"amountBIn": "Cantidad de token B para intercambiar"
+						"amountBIn": "La cantidad de token B para intercambiar"
 					}
 				},
 				"transferOwnership(address)": {
 					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
 				}
 			},
-			"title": "Simple Decentralized Exchange (DEX)",
+			"title": "Intercambio Descentralizado Simple (DEX)",
 			"version": 1
 		},
 		"userdoc": {
 			"events": {
 				"LiquidityAdded(uint256,uint256)": {
-					"notice": "Evento emitido al agregar liquidez"
+					"notice": "Emitido cuando se agrega liquidez"
 				},
 				"LiquidityRemoved(uint256,uint256)": {
-					"notice": "Evento emitido al remover liquidez"
+					"notice": "Emitido cuando se retira liquidez"
 				},
 				"TokenSwapped(address,uint256,uint256)": {
-					"notice": "Evento emitido al realizar un intercambio"
+					"notice": "Emitido cuando ocurre un intercambio de tokens"
 				}
 			},
 			"kind": "user",
@@ -373,13 +373,13 @@
 					"notice": "Agrega liquidez al pool"
 				},
 				"constructor": {
-					"notice": "Constructor para inicializar el contrato con los tokens"
+					"notice": "Inicializa el DEX con dos tokens"
 				},
 				"getPrice(address)": {
-					"notice": "Calcula el precio relativo de un token"
+					"notice": "Obtiene el precio de un token en relación con el otro"
 				},
 				"removeLiquidity(uint256,uint256)": {
-					"notice": "Remueve liquidez del pool"
+					"notice": "Retira liquidez del pool"
 				},
 				"swapAforB(uint256)": {
 					"notice": "Intercambia token A por token B"
@@ -394,13 +394,13 @@
 					"notice": "Token B en el pool de liquidez"
 				}
 			},
-			"notice": "Contrato para intercambiar tokens y gestionar liquidez",
+			"notice": "Este contrato facilita los intercambios de tokens y la gestión de liquidez",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"SimpleDEX_flattened.sol": "SimpleDEX"
+			"SimpleDEX.sol": "SimpleDEX"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -414,11 +414,36 @@
 		"remappings": []
 	},
 	"sources": {
-		"SimpleDEX_flattened.sol": {
-			"keccak256": "0x69c4e9463044bc5e713475d1956a6679bd7070d4ef46db4c3c52458177ff62a6",
+		"@openzeppelin/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://1d2152928ce6ea33a698c791d34869538e0a2a007f3fc560799ecb89cd4ce22d",
-				"dweb:/ipfs/QmcKrxNRx4LrwdZ7nyM6RxXoVTG7mXdKkAogq5QM8jNA9q"
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
+				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"SimpleDEX.sol": {
+			"keccak256": "0x7d634c29d1f8a41db3d6f7b681488b1d321144192757a4431bf98354f1794271",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b18ab487b5200c4a257898978f61496bb3a782c6ac7872d9a3e5f7aca8d97212",
+				"dweb:/ipfs/Qmd9YWfDjufR6SgGxJaYFj3KTz9cWaZBnqNgjJm6t6pJJ6"
 			]
 		}
 	},
