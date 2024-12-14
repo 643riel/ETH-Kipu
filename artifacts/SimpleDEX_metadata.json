@@ -400,7 +400,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"SimpleDEX.sol": "SimpleDEX"
+			"SimpleDEX_flattened.sol": "SimpleDEX"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -414,36 +414,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/access/Ownable.sol": {
-			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+		"SimpleDEX_flattened.sol": {
+			"keccak256": "0x13d6b09bb8ad3ae72a45d021a610057c104d903e72535a6c9c33ffcc6951772b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
-				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
-			]
-		},
-		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-			"keccak256": "0xe06a3f08a987af6ad2e1c1e774405d4fe08f1694b67517438b467cecf0da0ef7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://df6f0c459663c9858b6cba2cda1d14a7d05a985bed6d2de72bd8e78c25ee79db",
-				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
-			]
-		},
-		"@openzeppelin/contracts/utils/Context.sol": {
-			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
-				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
-			]
-		},
-		"SimpleDEX.sol": {
-			"keccak256": "0x7d634c29d1f8a41db3d6f7b681488b1d321144192757a4431bf98354f1794271",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b18ab487b5200c4a257898978f61496bb3a782c6ac7872d9a3e5f7aca8d97212",
-				"dweb:/ipfs/Qmd9YWfDjufR6SgGxJaYFj3KTz9cWaZBnqNgjJm6t6pJJ6"
+				"bzz-raw://d0897489551735608f4b2c8038287a278b181aaa0a149cc0ffddee46aa7975db",
+				"dweb:/ipfs/QmRbr9MnGum4h28rrNVr83WGw8M9HQAXD4wp5NZfetvsHD"
 			]
 		}
 	},

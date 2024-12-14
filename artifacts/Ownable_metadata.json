@@ -134,10 +134,11 @@
 	},
 	"sources": {
 		"SimpleDEX_flattened.sol": {
-			"keccak256": "0xb78aff2efa6815d659fc840d8a768bb27fdd3718d136f914639e3e70dd3a7a34",
+			"keccak256": "0x13d6b09bb8ad3ae72a45d021a610057c104d903e72535a6c9c33ffcc6951772b",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://7c7422a5e7e174014de2f62b4605c3ef6ee266ae9394ed6fb8a6185a0f0b84e1",
-				"dweb:/ipfs/QmeQMrYRUKHs6ijDLTDv6Gd53rcNSjpuDthW4BKLqFkZZM"
+				"bzz-raw://d0897489551735608f4b2c8038287a278b181aaa0a149cc0ffddee46aa7975db",
+				"dweb:/ipfs/QmRbr9MnGum4h28rrNVr83WGw8M9HQAXD4wp5NZfetvsHD"
 			]
 		}
 	},
